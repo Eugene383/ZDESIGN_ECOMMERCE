@@ -13,8 +13,8 @@ interface DetailPageProps {
 
 async function ProductLoader({params}:DetailPageProps){
     const {id} = await params
-    const productPromise = await getProduct(id)
-    return <DetailProduct  productPromise={productPromise}/>
+    const product = await getProduct(id)
+    return <DetailProduct product={product}/>
 }
 
 export default async function DetailPage({params}:DetailPageProps) {
