@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import { ThemeProvider } from "next-themes";
-<<<<<<< HEAD
 import Provider from '@/app/provider'
-=======
->>>>>>> 516baa94ee08a059552fb6b9f1d2de70cec322e4
+
 import "./globals.css";
 
 const defaultUrl = process.env.VERCEL_URL
