@@ -1,16 +1,17 @@
 "use client"
 import { Button } from "@/components/ui/button";
 import { Product } from "@/types/database.types";
+import { use } from "react";
 import { formatPrice } from "@/utils";
 import Image from "next/image";
 
 
 type ProductPageProps = {
-    productPromise: Promise<Product>
+    product: Product
 }
 
-export default function DetailProduct(productPromise:ProductPageProps) {
-    const item = productPromise.productPromise
+export default function DetailProduct({ product }: ProductPageProps) {
+    const item = product
     return(
         <div>
             
