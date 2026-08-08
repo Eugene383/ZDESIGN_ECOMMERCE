@@ -4,6 +4,8 @@ import ListProductsByCategory from "@/components/list-products-by-category";
 import Footer from "@/components/footer";
 import ProductsSkeleton from "@/components/products-skeleton";
 import ListCategories from "@/components/list-categories";
+
+
 export default async function Products({
   searchParams,
 }: {

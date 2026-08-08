@@ -24,7 +24,7 @@ export default function Home() {
             	  	  	  <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold mb-2 text-slate-900 dark:text-white">Produtos em destaque</h2>
             	  	  	  <p className="text-slate-600 dark:text-slate-400 text-base sm:text-lg font-light">Produto de qualidade para o sua necessidade</p>
             	  	  	</div>
-            	  	  	<Link href="/protected/products/" className="text-teal-600 font-semibold hover:underline text-sm sm:text-base whitespace-nowrap">
+            	  	  	<Link href="/products/" className="text-teal-600 font-semibold hover:underline text-sm sm:text-base whitespace-nowrap">
             	  	  	  Ver tudo &rarr;
             	  	  	</Link>
             	  	</div>
