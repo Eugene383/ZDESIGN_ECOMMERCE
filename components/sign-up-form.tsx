@@ -20,6 +20,7 @@ export function SignUpForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const [imgError, setImgError] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
@@ -34,7 +35,7 @@ export function SignUpForm({
     setError(null);
 
     if (password !== repeatPassword) {
-      setError("Passwords do not match");
+      setError("As senhas não coincidem");
       setIsLoading(false);
       return;
     }
@@ -44,13 +45,13 @@ export function SignUpForm({
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/protected`,
+          emailRedirectTo: `${window.location.origin}/onboarding`,
         },
       });
       if (error) throw error;
       router.push("/auth/sign-up-success");
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred");
+      setError(error instanceof Error ? error.message : "Ocorreu um erro");
     } finally {
       setIsLoading(false);
     }
@@ -60,8 +61,26 @@ export function SignUpForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">Sign up</CardTitle>
-          <CardDescription>Create a new account</CardDescription>
+          <div className="flex justify-center mb-4">
+              {!imgError ? (
+                <img
+                  src="/logo-Designer.jpeg"
+                  width={96}
+                  height={96}
+                  className="w-24 h-24 rounded-full object-cover"
+                  alt="ZD Designer logo"
+                  onError={() => {
+                    console.warn("Falha ao carregar logo: /logo-Designer.jpeg");
+                    setImgError(true);
+                  }}
+                />
+              ) : (
+                <div className="w-24 h-24 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-sm text-muted-foreground">ZD Designer</div>
+              )}
+            </div>
+
+          <CardTitle className="flex justify-center gap-2 text-2xl">Cadastrar-se</CardTitle>
+          <CardDescription className="flex justify-center gap-2">Crie uma conta para estar conectadono sistema</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSignUp}>
@@ -71,7 +90,7 @@ export function SignUpForm({
                 <Input
                   id="email"
                   type="email"
-                  placeholder="m@example.com"
+                  placeholder="manuel@gmail.com"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -79,7 +98,7 @@ export function SignUpForm({
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password">Senha</Label>
                 </div>
                 <Input
                   id="password"
@@ -91,7 +110,7 @@ export function SignUpForm({
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center">
-                  <Label htmlFor="repeat-password">Repeat Password</Label>
+                  <Label htmlFor="repeat-password">Repita a Senha</Label>
                 </div>
                 <Input
                   id="repeat-password"
@@ -103,13 +122,13 @@ export function SignUpForm({
               </div>
               {error && <p className="text-sm text-red-500">{error}</p>}
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Creating an account..." : "Sign up"}
+                {isLoading ? "Criando uma conta..." : "Cadastrar-se"}
               </Button>
             </div>
             <div className="mt-4 text-center text-sm">
-              Already have an account?{" "}
+              Já tem uma conta?{" "}
               <Link href="/auth/login" className="underline underline-offset-4">
-                Login
+                Entrar
               </Link>
             </div>
           </form>

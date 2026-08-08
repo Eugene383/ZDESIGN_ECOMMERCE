@@ -1,4 +1,3 @@
-
 "use client";
 
 import { cn } from "@/lib/utils";
@@ -25,36 +24,73 @@ export function LoginForm({
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [imgError, setImgError] = useState(false);
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const supabase = createClient();
-    setIsLoading(true);
-    setError(null);
+  e.preventDefault();
+  const supabase = createClient();
+  setIsLoading(true);
+  setError(null);
 
-    try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      if (error) throw error;
-      // Update this route to redirect to an authenticated route. The user already has an active session.
-      router.push("/");
-    } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred");
-    } finally {
-      setIsLoading(false);
+  try {
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) throw error;
+
+    // NOVO — verificar se o perfil está completo antes de decidir para onde ir
+    const { data: { user } } = await supabase.auth.getUser();
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("onboarding_completed")
+      .eq("id", user!.id)
+      .maybeSingle<{ onboarding_completed?: boolean | null }>();
+
+    const onboardingCompleted =
+      (profile as { onboarding_completed?: boolean | null } | null | undefined)
+        ?.onboarding_completed ?? false;
+
+    if (profileError) {
+      console.warn("Não foi possível verificar onboarding:", profileError);
     }
-  };
+
+    router.push(onboardingCompleted ? "/" : "/onboarding");
+    // FIM NOVO
+
+    router.refresh();
+  } catch (error: unknown) {
+    setError(error instanceof Error ? error.message : "An error occurred");
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">Entrar</CardTitle>
+            <div className="flex justify-center mb-4">
+              {!imgError ? (
+                <img
+                  src="/logo-Designer.jpeg"
+                  width={96}
+                  height={96}
+                  className="w-24 h-24 rounded-full object-cover"
+                  alt="ZD Designer logo"
+                  onError={() => {
+                    console.warn("Falha ao carregar logo: /logo-Designer.png");
+                    setImgError(true);
+                  }}
+                />
+              ) : (
+                <div className="w-24 h-24 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-sm text-muted-foreground">ZD Designer</div>
+              )}
+            </div>
+          <CardTitle className="flex justify-center gap-2 text-2xl">Entrar</CardTitle>
           <CardDescription>
-            Enter your email below to login to your account
+            Insira seu e-mail abaixo para fazer login na sua conta.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -65,7 +101,7 @@ export function LoginForm({
                 <Input
                   id="email"
                   type="email"
-                  placeholder="m@example.com"
+                  placeholder="manuel@gmail.com"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -73,12 +109,12 @@ export function LoginForm({
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password">Senha</Label>
                   <Link
                     href="/auth/forgot-password"
                     className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                   >
-                    Forgot your password?
+                    Esqueceu sua senha?
                   </Link>
                 </div>
                 <Input
@@ -91,16 +127,16 @@ export function LoginForm({
               </div>
               {error && <p className="text-sm text-red-500">{error}</p>}
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Logging in..." : "Login"}
+                {isLoading ? "Entrando..." : "Entrar"}
               </Button>
             </div>
             <div className="mt-4 text-center text-sm">
-              Don&apos;t have an account?{" "}
+              Não tem uma conta?{" "}
               <Link
                 href="/auth/sign-up"
                 className="underline underline-offset-4"
               >
-                Sign up
+                Cadastre-se
               </Link>
             </div>
           </form>
