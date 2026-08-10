@@ -1,3 +1,4 @@
+"use client"
 import Image from "next/image";
 import { Button } from "./ui/button";
 import {
@@ -7,6 +8,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "./ui/carousel";
+import Link from "next/link";
 
 
 const slides = [
@@ -37,7 +39,7 @@ export function Hero() {
   return (
     <section className="bg-gradient-to-br from-slate-950 via-slate-900 to-teal-950 py-4 sm:py-6 md:py-10">
       <div className="mx-auto max-w-7xl px-3 sm:px-4 md:px-8">
-        <div className="overflow-hidden rounded-lg sm:rounded-2xl lg:rounded-[28px] border border-white/10 bg-slate-950/40 shadow-[0_30px_80px_rgba(15,23,42,0.45)] backdrop-blur-sm">
+        <div className="overflow-hidden rounded-lg sm:rounded-2xl lg:rounded-[28px]  border-white/10 bg-slate-950/40 shadow-[0_30px_80px_rgba(15,23,42,0.45)] backdrop-blur-sm">
           <Carousel className="relative w-full">
             <CarouselContent>
               {slides.map((slide) => (
@@ -53,12 +55,10 @@ export function Hero() {
                     />
                     <div
                       style={{ backgroundImage: `url(${slide.image})` }}
-                      className="absolute inset-0 h-full w-full   brightness-50 object-cover"
+                      className="absolute inset-0 h-full w-full   brightness-90 object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/35 to-transparent" />
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(45,212,191,0.24),_transparent_35%)]" />
-
-                    <div className="absolute inset-x-3 bottom-3 max-w-xl rounded-lg sm:rounded-2xl lg:rounded-[24px] border border-white/15 bg-white/10 p-3 sm:p-5 md:p-6 text-white shadow-2xl backdrop-blur-md md:inset-x-8 md:bottom-8">
+                    
+                    <div className="absolute inset-x-3 bottom-3 max-w-xl  sm:rounded-2xl lg:rounded-[24px]  border-white/15 bg-white/10 p-3 sm:p-5 md:p-6 text-white shadow-2xl backdrop-blur-md md:inset-x-8 md:bottom-8">
                       <h1 className="mt-2 sm:mt-3 font-heading text-lg sm:text-2xl md:text-4xl font-bold leading-tight">
                         {slide.title}
                       </h1>
@@ -67,7 +67,7 @@ export function Hero() {
                       </p>
                       <div className="mt-4 sm:mt-5 flex flex-wrap gap-2 sm:gap-3">
                         <Button className="bg-teal-500 text-white hover:bg-teal-400 text-xs sm:text-sm px-3 sm:px-4 py-2">
-                          Ver catálogo
+                          <Link href="/catalog">Ver catálogo</Link>
                         </Button>
                         <Button
                           variant="outline"

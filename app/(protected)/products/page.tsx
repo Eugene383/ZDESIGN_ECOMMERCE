@@ -5,7 +5,6 @@ import Footer from "@/components/footer";
 import ProductsSkeleton from "@/components/products-skeleton";
 import ListCategories from "@/components/list-categories";
 
-
 export default async function Products({
   searchParams,
 }: {
@@ -14,23 +13,29 @@ export default async function Products({
   const resolvedSearchParams = await searchParams;
 
   return (
-    <main className="w-full ">
+    <main className="w-full overflow-x-hidden">
       <Header />
 
       <div className="">
         <section className="py-6 sm:py-8 md:py-12 px-3 sm:px-4 md:px-8 bg-white dark:bg-slate-950">
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8 sm:mb-12 gap-4">
-              <div>
-                <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold mb-2 text-slate-900 dark:text-white">Produtos por Categoria</h2>
-                <p className="text-slate-600 dark:text-slate-400 text-base sm:text-lg font-light">Navegue pelos produtos organizados por categoria</p>
-                <div>
+              <div className="min-w-0">
+                {/* min-w-0 aqui: essa div é filha de flex e precisava disto para poder encolher */}
+                <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold mb-2 text-slate-900 dark:text-white">
+                  Produtos por Categoria
+                </h2>
+                <p className="text-slate-600 dark:text-slate-400 text-base sm:text-lg font-light">
+                  Navegue pelos produtos organizados por categoria
+                </p>
+                <div className="flex min-w-0 items-center gap-4">
                   <Suspense fallback={<ProductsSkeleton />}>
                     <ListCategories activeCategory={resolvedSearchParams.categoria} />
                   </Suspense>
                 </div>
               </div>
             </div>
+
             <Suspense
               key={`${resolvedSearchParams.categoria ?? "all"}-${resolvedSearchParams.page ?? "1"}`}
               fallback={<ProductsSkeleton />}
@@ -40,6 +45,7 @@ export default async function Products({
           </div>
         </section>
       </div>
+
       <Footer />
     </main>
   );

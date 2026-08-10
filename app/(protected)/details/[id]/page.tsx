@@ -9,8 +9,6 @@ interface DetailPageProps {
 }
 
 
-
-
 async function ProductLoader({params}:DetailPageProps){
     const {id} = await params
     const product = await getProduct(id)
