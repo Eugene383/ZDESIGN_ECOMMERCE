@@ -1,4 +1,4 @@
-import { UserIcon } from "lucide-react";
+import { CreditCardIcon, ShoppingBagIcon, UserIcon } from "lucide-react";
 import { LogoutButton } from "./logout-button";
 import {
   Card,
@@ -18,14 +18,26 @@ export default function CardUser({ email }: { email?: string }) {
           {email}
         </CardTitle>
         <CardDescription className="text-xs font-medium text-slate-600 dark:text-slate-400">
-          Conta ativa
+          Bem-vindo(a) de volta!
         </CardDescription>
       </CardHeader>
-      <CardContent className="pt-0">
-        <div className="rounded-md border border-slate-200/80 bg-slate-50 px-3 py-2 text-xs text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
-          <Link href="#" className="flex items-center gap-2">
+      <CardContent className="flex flex-col gap-2 pt-0">
+        <div className="rounded-md border-separate border-slate-200  px-3 py-2 text-xs text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+          <Link href="#" className="flex items-center gap-2 hover:text-slate-900 dark:hover:text-white">
               <UserIcon size={16} className="inline-block mr-1" />
-              Perfil do usuário
+              Meu perfil
+          </Link>
+        </div>
+         <div className="rounded-md   px-3 py-2 text-xs text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+          <Link href="#" className="flex items-center gap-2 hover:text-slate-900 dark:hover:text-white">
+              <ShoppingBagIcon size={16} className="inline-block mr-1" />
+              Minhas ecomendas
+          </Link>
+        </div>
+         <div className="rounded-md   px-3 py-2 text-xs text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+          <Link href="#" className="flex items-center gap-2 hover:text-slate-900 dark:hover:text-white">
+              <CreditCardIcon size={16} className="inline-block mr-1" />
+              Meus pagamentos
           </Link>
         </div>
       </CardContent>
