@@ -1,6 +1,6 @@
 "use client";
 
-import {ProductGallery} from "@/components/product-gallery"
+import ProductGallery from "@/components/product-gallery"
 import { Button } from "@/components/ui/button";
 import { Product } from "@/types/database.types";
 import { formatPrice } from "@/utils";
