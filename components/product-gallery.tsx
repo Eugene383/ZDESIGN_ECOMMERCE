@@ -15,16 +15,14 @@ type ProductGalleryProps = {
 }
 
 export default function ProductGallery({ images, productName }: ProductGalleryProps) {
-  // Define a imagem inicial (primária ou a primeira da lista)
   const defaultImage =
     images.find((image) => image.is_primary)?.image_url ??
     images[0]?.image_url ??
     "/api/placeholder/200/150";
 
-  // Estado para armazenar a imagem principal visível
+
   const [selectedImage, setSelectedImage] = useState<string>(defaultImage);
 
-  // Sincroniza a imagem padrão caso as props mudem dinamicamente
   useEffect(() => {
     setSelectedImage(defaultImage);
   }, [defaultImage]);
