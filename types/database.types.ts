@@ -10,32 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.5"
-  }
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          extensions?: Json
-          operationName?: string
-          query?: string
-          variables?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
+    PostgrestVersion: "14.15"
   }
   public: {
     Tables: {
@@ -163,13 +138,108 @@ export type Database = {
           },
         ]
       }
+      product_attributes: {
+        Row: {
+          attribute_name: string
+          attribute_value: string
+          id: string
+          product_id: string | null
+        }
+        Insert: {
+          attribute_name: string
+          attribute_value: string
+          id?: string
+          product_id?: string | null
+        }
+        Update: {
+          attribute_name?: string
+          attribute_value?: string
+          id?: string
+          product_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_attributes_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_images: {
+        Row: {
+          id: string
+          image_url: string
+          is_primary: boolean | null
+          product_id: string | null
+        }
+        Insert: {
+          id?: string
+          image_url: string
+          is_primary?: boolean | null
+          product_id?: string | null
+        }
+        Update: {
+          id?: string
+          image_url?: string
+          is_primary?: boolean | null
+          product_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_images_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_variants: {
+        Row: {
+          color: string | null
+          id: string
+          price: number | null
+          product_id: string | null
+          size: string | null
+          sku: string | null
+          stock: number | null
+        }
+        Insert: {
+          color?: string | null
+          id?: string
+          price?: number | null
+          product_id?: string | null
+          size?: string | null
+          sku?: string | null
+          stock?: number | null
+        }
+        Update: {
+          color?: string | null
+          id?: string
+          price?: number | null
+          product_id?: string | null
+          size?: string | null
+          sku?: string | null
+          stock?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_variants_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       products: {
         Row: {
           category_id: string | null
           created_at: string | null
           description: string | null
           id: string
-          image_url: string | null
           name: string
           price: number
           stock: number | null
@@ -206,28 +276,40 @@ export type Database = {
       }
       profiles: {
         Row: {
-          access_level: string
+          access_level: string | null
+          bairro: string | null
           created_at: string | null
-          email: string
           id: string
-          name: string
-          password: string
+          municipio: string | null
+          name: string | null
+          onboarding_completed: boolean | null
+          phone: string | null
+          role: string | null
+          rua: string | null
         }
         Insert: {
-          access_level: string
+          access_level?: string | null
+          bairro?: string | null
           created_at?: string | null
-          email: string
           id?: string
-          name: string
-          password: string
+          municipio?: string | null
+          name?: string | null
+          onboarding_completed?: boolean | null
+          phone?: string | null
+          role?: string | null
+          rua?: string | null
         }
         Update: {
-          access_level?: string
+          access_level?: string | null
+          bairro?: string | null
           created_at?: string | null
-          email?: string
           id?: string
-          name?: string
-          password?: string
+          municipio?: string | null
+          name?: string | null
+          onboarding_completed?: boolean | null
+          phone?: string | null
+          role?: string | null
+          rua?: string | null
         }
         Relationships: []
       }
@@ -540,9 +622,6 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
   public: {
     Enums: {},
   },
@@ -579,5 +658,8 @@ export type ServiceRequest =
   Database["public"]["Tables"]["service_requests"]["Row"]
 
 export type Service =
+  Database["public"]["Tables"]["services"]["Row"]
+
+export type Product_images = 
   Database["public"]["Tables"]["services"]["Row"]
 

@@ -15,16 +15,16 @@ export async function getProductsForCategories({
   const from = (page - 1) * perPage;
   const to = from + perPage - 1;
 
-  // 1º: monta o builder com os filtros primeiro
-  let query =  supabase
+  let query = supabase
     .from("products")
-    .select("id, name, description, price, image_url, category_id", { count: "exact" });
+    .select("*, product_images (id, image_url, is_primary)", {
+      count: "exact",
+    });
 
   if (categoryId) {
-    query =  query.eq("category_id", categoryId); // filtro ainda é permitido aqui
+    query = query.eq("category_id", categoryId);
   }
 
-  // 2º: só agora aplica order/range (transform) — depois disto, sem mais .eq()
   const { data, count, error } = await query
     .order("created_at", { ascending: false })
     .range(from, to);
@@ -34,5 +34,5 @@ export async function getProductsForCategories({
     return { data: [], count: 0 };
   }
 
-  return { data, count: count ?? 0 };
+  return { data: data ?? [], count: count ?? 0 };
 }
