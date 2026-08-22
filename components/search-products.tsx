@@ -71,7 +71,7 @@ export default function SearchProductsDialog({ search }: SearchProductsProps) {
     <main className="w-full max-h-[65vh] overflow-y-auto">
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-2">
         {products.map((product) => (
-          <Link key={product.id} href={`/details/${product.id}`}>
+          <Link key={product.id} href={`/products/details/${product.id}`}>
             <Card className="group mx-auto flex h-full w-full max-w-sm flex-col overflow-hidden border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900">
               <div className="relative h-36 overflow-hidden bg-slate-100 dark:bg-slate-800 sm:h-40">
                 <Image
