@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { Button } from "./ui/button";
-import { Service } from "@/types/database.types";
 import { getServices } from "@/lib/supabase/queries/get-services";
 import { BoxesIcon } from "lucide-react";
 

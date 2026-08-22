@@ -58,7 +58,7 @@ export default async function ListProductsByCategory({
           return (
             <Link
               key={productbyCategory.id}
-              href={`/details/${productbyCategory.id}`}
+              href={`/products/details/${productbyCategory.id}`}
             >
               <Card className="group flex h-full flex-col overflow-hidden border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900">
                 <div className="relative aspect-square overflow-hidden bg-slate-100 dark:bg-slate-800">

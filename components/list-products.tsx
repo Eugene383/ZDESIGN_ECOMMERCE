@@ -37,7 +37,7 @@ export default async function ListProducts() {
                 product.product_images?.[0]?.image_url?? "/api/placeholder/200/150"
 
                 return (
-                  <Link key={product.id} href={`/details/${product.id}`}>
+                  <Link key={product.id} href={`/products/details/${product.id}`}>
                     <Card
                       className="group flex h-full flex-col overflow-hidden border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900"
                     >
