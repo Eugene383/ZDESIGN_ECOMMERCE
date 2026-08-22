@@ -1,25 +1,37 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Image from "next/image"
-
-type ProductImage = {
-  id: string;
-  image_url: string;
-  is_primary?: boolean | null;
-};
+import { useState, useEffect, useMemo } from "react";
+import Image from "next/image";
+import { Product, Product_attributes, Product_images, Product_variants } from "@/types/database.types";
 
 type ProductGalleryProps = {
-  images: ProductImage[]
-  productName: string
-}
+  product: (Product 
+      & { product_images?: Product_images[] }
+      & { product_variants?: Product_variants[] }
+      & { product_attributes?: Product_attributes[] }
+    ) | null;
+  onVariantChange?: (variant: Product_variants | null) => void;
+};
 
-export default function ProductGallery({ images, productName }: ProductGalleryProps) {
+export default function ProductGallery({ product, onVariantChange }: ProductGalleryProps) {
+  const images = product?.product_images ?? [];
+
+  const color = useMemo(
+    () => [...new Set((product?.product_variants ?? []).map(v => v.color).filter(Boolean))],
+    [product?.product_variants]
+  );
+
+  const size = useMemo(
+    () => [...new Set((product?.product_variants ?? []).map(v => v.size).filter(Boolean))],
+    [product?.product_variants]
+  );
+
+  const [colorSelected, setColorSelected] = useState<string | null>(null);
+  const [sizeSelected, setSizeSelected] = useState<string | null>(null);
+
   const defaultImage =
     images.find((image) => image.is_primary)?.image_url ??
-    images[0]?.image_url ??
-    "/api/placeholder/200/150";
-
+    images[0]?.image_url ?? "/api/placeholder/200/150";
 
   const [selectedImage, setSelectedImage] = useState<string>(defaultImage);
 
@@ -27,61 +39,140 @@ export default function ProductGallery({ images, productName }: ProductGalleryPr
     setSelectedImage(defaultImage);
   }, [defaultImage]);
 
+  useEffect(() => {
+    if (color.length > 0 && !colorSelected) {
+      setColorSelected(color[0]);
+    }
+  }, [color, colorSelected]);
+
+  const variantAtual = product?.product_variants?.find(
+    v => v.color === colorSelected && v.size === sizeSelected
+  ) ?? null;
+
+  useEffect(() => {
+    onVariantChange?.(variantAtual);
+  }, [variantAtual, onVariantChange]);
+
+  if (!product) {
+    return <p className="text-slate-500">Sem imagens disponíveis.</p>;
+  }
+
+  const tamanhoDisponivel = (tamanho: string | null) =>
+    product.product_variants?.some(
+      v => v.color === colorSelected && v.size === tamanho && (v.stock ?? 0) > 0
+    );
+
   return (
     <div className="space-y-4">
       {/* Imagem Principal */}
-      <div className="overflow-hidden rounded-[2rem] border border-slate-200 bg-slate-100 p-6 shadow-inner dark:border-slate-800 dark:bg-slate-900">
-        <div className="relative aspect-[16/10] overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-slate-900 via-teal-600 to-slate-700">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.22),_transparent_35%)]" />
+      <figure className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-900">
+        <div className="relative aspect-[4/3] w-full overflow-hidden">
           <Image
             src={selectedImage}
-            alt={productName}
+            alt={product.name}
             fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
             className="object-cover transition-all duration-300"
             priority
           />
         </div>
-      </div>
+        <figcaption className="sr-only">Imagem principal de {product.name}</figcaption>
+      </figure>
 
       {/* Miniaturas */}
-      <div className="grid grid-cols-4 gap-3">
+      <ul className="flex flex-wrap gap-3" aria-label="Galeria de imagens do produto">
         {images.length > 0
-          ? images.map((image) => {
+          ? images.map((image, index) => {
               const isSelected = selectedImage === image.image_url;
-
               return (
-                <button
-                  key={image.id}
-                  type="button"
-                  onClick={() => setSelectedImage(image.image_url)}
-                  className={`group cursor-pointer overflow-hidden rounded-3xl border p-3 transition text-left ${
-                    isSelected
-                      ? "border-teal-500 ring-2 ring-teal-500/20 dark:border-teal-400"
-                      : "border-slate-200 bg-slate-50 hover:border-teal-500 dark:border-slate-800 dark:bg-slate-900"
-                  }`}
-                >
-                  <div className="relative aspect-square overflow-hidden rounded-2xl bg-gradient-to-br from-slate-200 via-slate-100 to-emerald-50 transition group-hover:scale-105 dark:from-slate-800 dark:via-slate-900 dark:to-slate-950">
+                <li key={image.id}>
+                  <button
+                    type="button"
+                    aria-pressed={isSelected}
+                    aria-label={`Ver imagem ${index + 1} de ${product.name}`}
+                    onClick={() => setSelectedImage(image.image_url)}
+                    className={`relative h-20 w-20 overflow-hidden rounded-xl border-2 transition ${
+                      isSelected
+                        ? "border-slate-900 dark:border-white"
+                        : "border-transparent hover:border-slate-300 dark:hover:border-slate-600"
+                    }`}
+                  >
                     <Image
                       src={image.image_url}
-                      alt={`${productName} - ${image.id}`}
+                      alt=""
                       fill
-                      sizes="(max-width: 768px) 25vw, 150px"
+                      sizes="80px"
                       className="object-cover"
                     />
-                  </div>
-                </button>
+                  </button>
+                </li>
               );
             })
           : Array.from({ length: 4 }).map((_, index) => (
-              <div
-                key={index}
-                className="group overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-900"
-              >
-                <div className="aspect-square rounded-2xl bg-gradient-to-br from-slate-200 via-slate-100 to-emerald-50 dark:from-slate-800 dark:via-slate-900 dark:to-slate-950" />
-              </div>
+              <li key={index}>
+                <div className="h-20 w-20 rounded-xl border-2 border-transparent bg-slate-100 dark:bg-slate-900" />
+              </li>
             ))}
-      </div>
+      </ul>
+
+      {/* Seletor de cor */}
+      {color.length > 0 && (
+        <fieldset className="space-y-2 border-0 p-0">
+          <legend className="text-sm font-semibold text-slate-900 dark:text-white">
+            Cor: {colorSelected}
+          </legend>
+          <div className="flex flex-wrap gap-2">
+            {color.map((c) => (
+              <button
+                key={c}
+                type="button"
+                aria-pressed={colorSelected === c}
+                onClick={() => {
+                  setColorSelected(c);
+                  setSizeSelected(null);
+                }}
+                className={`rounded-xl border px-3 py-2 text-sm font-semibold transition ${
+                  colorSelected === c
+                    ? "border-emerald-600 bg-emerald-600 text-white"
+                    : "border-slate-200 bg-white text-slate-700 hover:border-emerald-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200"
+                }`}
+              >
+                {c}
+              </button>
+            ))}
+          </div>
+        </fieldset>
+      )}
+
+      {/* Seletor de tamanho */}
+      {size.length > 0 && (
+        <fieldset className="space-y-2 border-0 p-0">
+          <legend className="text-sm font-semibold text-slate-900 dark:text-white">
+            Tamanho: {sizeSelected ?? "selecione"}
+          </legend>
+          <div className="flex flex-wrap gap-2">
+            {size.map((s) => {
+              const disponivel = tamanhoDisponivel(s);
+              return (
+                <button
+                  key={s}
+                  type="button"
+                  disabled={!disponivel}
+                  aria-pressed={sizeSelected === s}
+                  onClick={() => setSizeSelected(s)}
+                  className={`min-w-12 rounded-xl border px-3 py-2 text-sm font-semibold transition ${
+                    sizeSelected === s
+                      ? "border-emerald-600 bg-emerald-600 text-white"
+                      : "border-slate-200 bg-white text-slate-700 hover:border-emerald-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200"
+                  } ${!disponivel ? "opacity-40 cursor-not-allowed line-through" : ""}`}
+                >
+                  {s}
+                </button>
+              );
+            })}
+          </div>
+        </fieldset>
+      )}
     </div>
   );
 }

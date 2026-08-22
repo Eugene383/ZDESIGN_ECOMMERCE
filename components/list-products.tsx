@@ -14,10 +14,9 @@ import { getProducts } from "@/lib/supabase/queries/get-products";
 import CartButton from "./cart-button";
 
 
-
-
-
 export default async function ListProducts() {
+
+  
   
     const products = await getProducts()
 

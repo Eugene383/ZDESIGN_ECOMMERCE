@@ -249,7 +249,6 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           id?: string
-          image_url?: string | null
           name: string
           price: number
           stock?: number | null
@@ -259,7 +258,6 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           id?: string
-          image_url?: string | null
           name?: string
           price?: number
           stock?: number | null
@@ -661,5 +659,10 @@ export type Service =
   Database["public"]["Tables"]["services"]["Row"]
 
 export type Product_images = 
-  Database["public"]["Tables"]["services"]["Row"]
+  Database["public"]["Tables"]["product_images"]["Row"]
 
+export type Product_attributes = 
+  Database["public"]["Tables"]["product_attributes"]["Row"]
+
+export type Product_variants = 
+  Database["public"]["Tables"]["product_variants"]["Row"]
